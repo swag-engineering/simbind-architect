@@ -1,0 +1,30 @@
+cmake_minimum_required(VERSION 3.22)
+project({{ model_name }} C)
+
+find_package(SWIG REQUIRED)
+include(${SWIG_USE_FILE})
+
+find_package(PythonLibs REQUIRED)
+include_directories(${PYTHON_INCLUDE_DIRS})
+
+set(CMAKE_SWIG_FLAGS "")
+
+file(GLOB SOURCE_FILES "{{ source_dir }}/*.c")
+
+add_library(model_lib OBJECT ${SOURCE_FILES})
+set_property(TARGET model_lib PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+include_directories({{ source_dir }})
+
+set_property(SOURCE {{ swig_interface_path }} PROPERTY SWIG_USE_SWIG_DEPENDENCIES TRUE)
+set_source_files_properties({{ model_name }} PROPERTIES COMPILE_FLAGS "-debug-tmsearch")
+swig_add_library({{ model_name }}
+    TYPE MODULE
+    LANGUAGE python
+    SOURCES {{ swig_interface_path }}
+    OUTPUT_DIR {{ output_dir }}
+    OUTFILE_DIR {{ build_dir }}
+)
+
+set_target_properties(${SWIG_MODULE_{{ model_name }}_REAL_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY {{ output_dir }})
+target_link_libraries({{ model_name }} $<TARGET_OBJECTS:model_lib>)

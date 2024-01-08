@@ -1,0 +1,10 @@
+%module {{ model_name }}
+%{
+    #include "{{ model_name }}.h"
+%}
+
+const char_T* rtmGetErrorStatus(RT_MODEL_{{ model_name }}_T*);
+real_T rtmGetT(RT_MODEL_{{ model_name }}_T*);
+
+%include "{{ model_name }}.h"
+%include "rtwtypes.h"

@@ -1,0 +1,11 @@
+from distutils.core import setup
+
+setup(
+    name="model",
+    version="{{ model_version }}",
+    author="SWAG Engineering",
+    packages=["{{ package_name }}"],
+    package_data={
+        "model": ["*.so"],
+    }
+)

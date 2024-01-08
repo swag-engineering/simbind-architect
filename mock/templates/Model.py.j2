@@ -1,0 +1,32 @@
+from .BaseModel import BaseModel
+from . import types
+
+
+class Model(BaseModel):
+    def __init__(self):
+        self.__time = 0
+        self.__time_step = {{ time_step|round(4) }}
+        self.__input = types.ExtU_{{ model_name }}_T()
+        self.__output = types.ExtY_{{ model_name }}_T()
+        self.initialize()
+
+    @property
+    def input(self) -> types.ExtU_{{ model_name }}_T:
+        return self.__input
+
+    @property
+    def output(self) -> types.ExtY_{{ model_name }}_T:
+        return self.__output
+
+    @property
+    def time(self) -> float:
+        return self.__time
+
+    def initialize(self) -> None:
+        pass
+
+    def step(self) -> None:
+        self.__time += self.__time_step
+
+    def terminate(self) -> None:
+        pass

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project]
+name = "{{ package_name }}"
+version = "{{ model_version }}"
+description = "Python wrapper around '{{ model_name }}' Simulink model"
+authors = [{name = "SWAG Engineering UG", email = "anton.rak@swag-engineering.io"}]
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.8"
+
+[tool.setuptools.package-data]
+"{{ package_name }}" = ["*.so"]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_x86_64"

@@ -1,0 +1,30 @@
+from abc import ABC, abstractmethod
+
+
+class BaseModel(ABC):
+    @property
+    @abstractmethod
+    def input(self):
+        pass
+
+    @property
+    @abstractmethod
+    def output(self):
+        pass
+
+    @property
+    @abstractmethod
+    def time(self) -> float:
+        pass
+
+    @abstractmethod
+    def initialize(self) -> None:
+        pass
+
+    @abstractmethod
+    def step(self) -> None:
+        pass
+
+    @abstractmethod
+    def terminate(self) -> None:
+        pass

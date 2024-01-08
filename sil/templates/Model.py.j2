@@ -1,0 +1,73 @@
+from .BaseModel import BaseModel
+from . import {{ model_name }}
+
+
+def collect(func):
+    def wrapper(self, *args, **kwargs):
+        if self.collector_callback:
+            in_data = {
+                {%- for key, value in input_map.items() %}
+                "{{ key }}": self.input.{{ key }}{% if not loop.last %},{% endif %}
+                {%- endfor %}
+            }
+            out_data = {
+                {%- for key, value in output_map.items() %}
+                "{{ key }}": self.output.{{ key }}{% if not loop.last %},{% endif %}
+                {%- endfor %}
+            }
+            self.collector_callback(self.time, in_data, out_data)
+        return func(self, *args, **kwargs)
+    return wrapper
+
+
+class Input:
+    {%- for key, value in input_map.items() %}
+    @property
+    def {{ key }}(self) -> {{ value }}:
+        return {{ model_name }}.cvar.{{ model_name }}_U.{{ key }}
+
+    @{{ key }}.setter
+    def {{ key }}(self, value: {{ value }}):
+        {{ model_name }}.cvar.{{ model_name }}_U.{{ key }} = value
+    {% endfor %}
+
+class Output:
+    {%- for key, value in output_map.items() %}
+    @property
+    def {{ key }}(self) -> {{ value }}:
+        return {{ model_name }}.cvar.{{ model_name }}_Y.{{ key }}
+    {% endfor %}
+
+class Model(BaseModel):
+    def __init__(self, collector_callback=None):
+        self.collector_callback = collector_callback
+        self._input = Input()
+        self._output = Output()
+        self.initialize()
+
+    @property
+    def input(self) -> Input:
+        return self._input
+
+    @property
+    def output(self) -> Output:
+        return self._output
+
+    @property
+    def rt_model(self) -> {{ model_name }}.tag_RTM_{{ model_name }}_T:
+        return {{ model_name }}.cvar.{{ model_name }}_M
+
+    @property
+    def time(self) -> float:
+        return {{ model_name }}.rtmGetT(self.rt_model)
+
+    def initialize(self) -> None:
+        return {{ model_name }}.{{ model_name }}_initialize()
+
+    @collect
+    def step(self) -> None:
+        return {{ model_name }}.{{ model_name }}_step()
+
+    @collect
+    def terminate(self) -> None:
+        return {{ model_name }}.{{ model_name }}_terminate()
