@@ -24,5 +24,5 @@ class Driver(abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    async def compose(cls, architect: Collector, output_dir: str) -> str:
+    async def compose(cls, architect: Collector, output_dir: str, license_text: str) -> str:
         pass

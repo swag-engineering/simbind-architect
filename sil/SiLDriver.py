@@ -15,7 +15,7 @@ class SiLDriver(Driver):
     _env = Environment(loader=FileSystemLoader(_templ_dir), autoescape=True, keep_trailing_newline=True)
 
     @classmethod
-    async def compose(cls, collector: Collector, output_dir: str) -> tuple[str, str, str]:
+    async def compose(cls, collector: Collector, output_dir: str, license_text: str) -> tuple[str, str, str]:
         if not os.path.isdir(output_dir):
             raise ValueError(f"Directory '{output_dir}' not found.")
 
@@ -57,7 +57,7 @@ class SiLDriver(Driver):
 
             license_path = os.path.join(output_dir, "LICENSE")
             with open(license_path, 'w') as file_obj:
-                file_obj.write(os.environ['SIMBIND_LICENSE'])
+                file_obj.write(license_text)
 
             readme_str = cls._env.get_template("README.md.j2").render()
             readme_path = os.path.join(output_dir, "README.md")

@@ -1,32 +1,61 @@
 from .BaseModel import BaseModel
-from . import types
 
+
+class Input:
+    {%- for key, value in input_map.items() %}
+    @property
+    def {{ key }}(self) -> {{ value }}:
+        return {{ value }}(0)
+
+    @{{ key }}.setter
+    def {{ key }}(self, value: {{ value }}):
+        pass
+    {% endfor %}
+
+class Output:
+    {%- for key, value in output_map.items() %}
+    @property
+    def {{ key }}(self) -> {{ value }}:
+        return {{ value }}(0)
+    {% endfor %}
 
 class Model(BaseModel):
     def __init__(self):
-        self.__time = 0
-        self.__time_step = {{ time_step|round(4) }}
-        self.__input = types.ExtU_{{ model_name }}_T()
-        self.__output = types.ExtY_{{ model_name }}_T()
+        self._time = 0
+        self._time_step = {{ time_step|round(4) }}
+        self._input = Input()
+        self._output = Output()
         self.initialize()
 
     @property
-    def input(self) -> types.ExtU_{{ model_name }}_T:
-        return self.__input
+    def input(self) -> Input:
+        """
+        Input interface of the model. Available properties:
+        {%- for key, value in input_map.items() %}
+            {{ key }}: {{ value }}
+        {%- endfor %}
+        """
+        return self._input
 
     @property
-    def output(self) -> types.ExtY_{{ model_name }}_T:
-        return self.__output
+    def output(self) -> Output:
+        """
+        Output interface of the model. Available properties:
+        {%- for key, value in output_map.items() %}
+            {{ key }}: {{ value }}
+        {%- endfor %}
+        """
+        return self._output
 
     @property
     def time(self) -> float:
-        return self.__time
+        return self._time
 
     def initialize(self) -> None:
         pass
 
     def step(self) -> None:
-        self.__time += self.__time_step
+        self._time += self._time_step
 
     def terminate(self) -> None:
         pass
