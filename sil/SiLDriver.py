@@ -8,6 +8,7 @@ from jinja2 import Environment, FileSystemLoader
 from ..Collector import Collector
 from ..Driver import Driver
 
+
 class SiLDriver(Driver):
     _templ_dir = os.path.abspath(
         os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
@@ -97,6 +98,7 @@ class SiLDriver(Driver):
             make_proc = await asyncio.create_subprocess_exec(
                 'make',
                 f'-C{build_dir.name}',
+                '--silent',
                 stdout=asyncio.subprocess.DEVNULL,
                 stderr=asyncio.subprocess.PIPE
             )
