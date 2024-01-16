@@ -42,7 +42,10 @@ class Collector:
         return self.get_members(f"ExtY_{self.model_name}_T")
 
     def get_members(self, struct_name: str) -> dict:
-        return {member.name: self.types_map[member.type] for member in self.structs_collection[struct_name].members}
+        return {
+            member.name: self.types_map[member.type]
+            for member in self.structs_collection[struct_name].members
+        } if struct_name in self.structs_collection else {}
 
     @classmethod
     async def create(cls, c_code_path, time_step) -> Collector:

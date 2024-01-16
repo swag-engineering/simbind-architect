@@ -40,14 +40,14 @@ class MockDriver(Driver):
         with open(model_path, 'w') as file_obj:
             file_obj.write(model_str)
 
-        types_str = cls._env.get_template("types.py.j2").render(
-            model_name=collector.model_name,
-            input_map=collector.input_members,
-            output_map=collector.output_members
-        )
-        types_path = os.path.join(module_dir, "types.py")
-        with open(types_path, 'w') as file_obj:
-            file_obj.write(types_str)
+        # types_str = cls._env.get_template("types.py.j2").render(
+        #     model_name=collector.model_name,
+        #     input_map=collector.input_members,
+        #     output_map=collector.output_members
+        # )
+        # types_path = os.path.join(module_dir, "types.py")
+        # with open(types_path, 'w') as file_obj:
+        #     file_obj.write(types_str)
 
         pyproject_str = cls._env.get_template("pyproject.toml.j2").render(
             model_version=collector.model_version,

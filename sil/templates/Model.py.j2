@@ -23,6 +23,7 @@ def collect(func):
     return wrapper
 
 class Input:
+    {%- if input_map %}
     {%- for key, value in input_map.items() %}
     @property
     def {{ key }}(self) -> {{ value }}:
@@ -32,13 +33,20 @@ class Input:
     def {{ key }}(self, value: {{ value }}):
         {{ model_name }}.cvar.{{ model_name }}_U.{{ key }} = value
     {% endfor %}
+    {%- else %}
+    pass
+    {% endif %}
 
 class Output:
+    {%- if output_map %}
     {%- for key, value in output_map.items() %}
     @property
     def {{ key }}(self) -> {{ value }}:
         return {{ model_name }}.cvar.{{ model_name }}_Y.{{ key }}
     {% endfor %}
+    {%- else %}
+    pass
+    {% endif %}
 
 class Model(BaseModel):
     def __init__(self, collector_callback=None):
