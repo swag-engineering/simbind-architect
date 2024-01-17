@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 
@@ -13,7 +14,8 @@ def extract_model_data(rtmodel_path: str) -> tuple[str, str]:
 def extract_model_version(rtmodel_data: str) -> str:
     match = re.search(r'Model version *: ([0-9.]+).*', rtmodel_data)
     if not match:
-        raise ValueError("Can't detect model version")
+        logging.warning("Can't detect model version.")
+        return "1"
     return match.group(1)
 
 
