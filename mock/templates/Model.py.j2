@@ -2,6 +2,7 @@ from .BaseModel import BaseModel
 
 
 class Input:
+    {%- if input_map %}
     {%- for key, value in input_map.items() %}
     @property
     def {{ key }}(self) -> {{ value }}:
@@ -11,13 +12,20 @@ class Input:
     def {{ key }}(self, value: {{ value }}):
         pass
     {% endfor %}
+    {%- else %}
+    pass
+    {% endif %}
 
 class Output:
+    {%- if output_map %}
     {%- for key, value in output_map.items() %}
     @property
     def {{ key }}(self) -> {{ value }}:
         return {{ value }}(0)
     {% endfor %}
+    {%- else %}
+    pass
+    {% endif %}
 
 class Model(BaseModel):
     def __init__(self):

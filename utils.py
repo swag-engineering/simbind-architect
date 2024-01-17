@@ -4,6 +4,7 @@ import os
 import random
 import shutil
 import sys
+import traceback
 from concurrent.futures import ProcessPoolExecutor
 from importlib import import_module
 
@@ -16,7 +17,7 @@ async def test_model_integrity(
         module_name: str,
         class_name: str,
         collector: Collector,
-        test_callback: bool = False
+        test_callback: bool = False,
 ):
     loop = asyncio.get_event_loop()
     pool = ProcessPoolExecutor(max_workers=1)
@@ -68,13 +69,13 @@ def execute(
         if set(in_data.keys()) != set(input_vars):
             raise RuntimeError("Input vars do not match!")
         if set(out_data.keys()) != set(output_vars):
-            raise RuntimeError("Input vars do not match!")
+            raise RuntimeError("Output vars do not match!")
         if time != current_time:
             raise RuntimeError("Time does not match")
         if in_data != current_input:
             raise RuntimeError("Current input does not match")
-        # if out_data != current_output:
-        #     raise RuntimeError("Current output does not match")
+        if out_data != current_output:
+            raise RuntimeError("Current output does not match")
 
     def collect_data():
         nonlocal current_time
@@ -98,7 +99,6 @@ def execute(
         model_class = getattr(model_module, class_name)
 
         instance = model_class(callback) if test_callback else model_class()
-        instance.initialize()
         for _ in range(100):
             set_input()
             collect_data()

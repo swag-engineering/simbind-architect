@@ -25,3 +25,6 @@ class StructNodeCollection(Node, Collection):
 
     def __getitem__(self, item):
         return self.structs[item]
+
+    def __contains__(self, item):
+        return item in self.structs.keys()
