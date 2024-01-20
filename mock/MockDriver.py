@@ -13,7 +13,7 @@ class MockDriver(Driver):
     _env = Environment(loader=FileSystemLoader(_templ_dir), autoescape=True, keep_trailing_newline=True)
 
     @classmethod
-    async def compose(cls, collector: Collector, output_dir: str, license_text: str) -> tuple[str, str, str]:
+    async def compose(cls, collector: Collector, output_dir: str, license_text: str) -> tuple[str, str]:
         if not os.path.isdir(output_dir):
             raise ValueError(f"Directory '{output_dir}' not found.")
 
@@ -58,4 +58,4 @@ class MockDriver(Driver):
         with open(readme_path, 'w') as file_obj:
             file_obj.write(readme_str)
 
-        return collector.python_package_name, cls.module_name, cls.wrapper_class_name
+        return collector.python_package_name, cls.wrapper_class_name

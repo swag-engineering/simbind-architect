@@ -18,10 +18,9 @@ class MemberFunctionEnum(enum.Enum):
 
 
 class Driver(abc.ABC):
-    module_name = "model"
     wrapper_class_name = "Model"
 
     @classmethod
     @abc.abstractmethod
-    async def compose(cls, architect: Collector, output_dir: str, license_text: str) -> str:
+    async def compose(cls, architect: Collector, output_dir: str, license_text: str) -> tuple[str, str]:
         pass

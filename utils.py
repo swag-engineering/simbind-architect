@@ -13,7 +13,6 @@ from .Collector import Collector
 async def test_model_integrity(
         search_path: str,
         pkg_name: str,
-        module_name: str,
         class_name: str,
         collector: Collector,
         test_callback: bool = False,
@@ -29,7 +28,6 @@ async def test_model_integrity(
         queue,
         search_path,
         pkg_name,
-        module_name,
         class_name,
         collector.input_members.keys(),
         collector.output_members.keys(),
@@ -50,7 +48,6 @@ def execute(
         queue: multiprocessing.Queue,
         search_path: str,
         pkg_name: str,
-        module_name: str,
         class_name: str,
         input_vars: list[str],
         output_vars: list[str],
@@ -94,7 +91,7 @@ def execute(
     try:
         sys.path.append(search_path)
 
-        model_module = import_module(module_name, package=pkg_name)
+        model_module = import_module(pkg_name)
         model_class = getattr(model_module, class_name)
 
         instance = model_class(callback) if test_callback else model_class()

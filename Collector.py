@@ -9,7 +9,7 @@ from .architect_utils import extract_model_data, collect_includes
 
 
 class Collector:
-    def __init__(self, c_code_path, python_package_name, time_step):
+    def __init__(self, c_code_path: str, python_package_name: str, time_step: float):
         self.c_code_tmp_path = c_code_path
         self.python_package_name = python_package_name
         self.time_step = time_step
@@ -49,5 +49,5 @@ class Collector:
         } if struct_name in self.structs_collection else {}
 
     @classmethod
-    async def create(cls, c_code_path, time_step) -> Collector:
-        return await asyncio.to_thread(cls, c_code_path, time_step)
+    async def create(cls, c_code_path: str, python_package_name: str, time_step: float) -> Collector:
+        return await asyncio.to_thread(cls, c_code_path, python_package_name, time_step)
