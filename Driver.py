@@ -19,7 +19,6 @@ class MemberFunctionEnum(enum.Enum):
 
 class Driver(abc.ABC):
     module_name = "model"
-    pip_package_name = "model"
     wrapper_class_name = "Model"
 
     @classmethod

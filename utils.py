@@ -4,7 +4,6 @@ import os
 import random
 import shutil
 import sys
-import traceback
 from concurrent.futures import ProcessPoolExecutor
 from importlib import import_module
 

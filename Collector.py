@@ -9,8 +9,9 @@ from .architect_utils import extract_model_data, collect_includes
 
 
 class Collector:
-    def __init__(self, c_code_path, time_step):
+    def __init__(self, c_code_path, python_package_name, time_step):
         self.c_code_tmp_path = c_code_path
+        self.python_package_name = python_package_name
         self.time_step = time_step
 
         self.rtmodel_h_path = os.path.join(self.c_code_tmp_path, 'rtmodel.h')

@@ -20,8 +20,8 @@ class SiLDriver(Driver):
         if not os.path.isdir(output_dir):
             raise ValueError(f"Directory '{output_dir}' not found.")
 
-        module_dir = os.path.join(output_dir, cls.module_name)
-        os.mkdir(module_dir)
+        pkg_dir = os.path.join(output_dir, collector.python_package_name)
+        os.mkdir(pkg_dir)
 
         build_dir = tempfile.TemporaryDirectory()
         stash_dir = tempfile.TemporaryDirectory()
@@ -29,12 +29,12 @@ class SiLDriver(Driver):
             init_str = cls._env.get_template("__init__.py.j2").render(
                 model_name=collector.model_name
             )
-            init_path = os.path.join(module_dir, "__init__.py")
+            init_path = os.path.join(pkg_dir, "__init__.py")
             with open(init_path, 'w') as file_obj:
                 file_obj.write(init_str)
 
             base_model_str = cls._env.get_template("BaseModel.py.j2").render()
-            base_model_path = os.path.join(module_dir, "BaseModel.py")
+            base_model_path = os.path.join(pkg_dir, "BaseModel.py")
             with open(base_model_path, 'w') as file_obj:
                 file_obj.write(base_model_str)
 
@@ -43,13 +43,13 @@ class SiLDriver(Driver):
                 input_map=collector.input_members,
                 output_map=collector.output_members
             )
-            model_path = os.path.join(module_dir, "Model.py")
+            model_path = os.path.join(pkg_dir, "Model.py")
             with open(model_path, 'w') as file_obj:
                 file_obj.write(model_str)
 
             pyproject_str = cls._env.get_template("pyproject.toml.j2").render(
                 model_version=collector.model_version,
-                package_name=cls.pip_package_name,
+                package_name=collector.python_package_name,
                 model_name=collector.model_name
             )
             pyproject_path = os.path.join(output_dir, "pyproject.toml")
@@ -76,7 +76,7 @@ class SiLDriver(Driver):
                 model_name=collector.model_name,
                 source_dir=collector.c_code_tmp_path,
                 swig_interface_path=swig_path,
-                output_dir=module_dir,
+                output_dir=pkg_dir,
                 build_dir=build_dir.name,
             )
             cmake_path = os.path.join(stash_dir.name, "CMakeLists.txt")
@@ -110,4 +110,4 @@ class SiLDriver(Driver):
             build_dir.cleanup()
             stash_dir.cleanup()
 
-        return cls.pip_package_name, cls.module_name, cls.wrapper_class_name
+        return collector.python_package_name, cls.module_name, cls.wrapper_class_name
