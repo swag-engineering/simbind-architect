@@ -7,7 +7,7 @@ from .Collection import Collection
 
 class StructNodeCollection(Node, Collection):
     def __init__(self, top_node):
-        self.structs = {}
+        self.structs: dict[str, StructNode] = {}
         for nested in top_node:
             if StructNode.is_type(nested):
                 self.add(StructNode(nested))
@@ -16,7 +16,7 @@ class StructNodeCollection(Node, Collection):
 
     @staticmethod
     def is_type(decl_node):
-        return type(decl_node) == ast.FileAST
+        return isinstance(decl_node, ast.FileAST)
 
     def add(self, struct: StructNode):
         if struct.name in self.structs.keys():

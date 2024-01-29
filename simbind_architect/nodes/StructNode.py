@@ -6,7 +6,7 @@ from .StructNodeMember import StructNodeMember
 
 class StructNode(Node):
     def __init__(self, decl_node, nested=False):
-        self.name = decl_node.declname if type(decl_node) == ast.TypeDecl else decl_node.type.name
+        self.name = decl_node.declname if isinstance(decl_node, ast.TypeDecl) else decl_node.type.name
         self.members = []
         self.nested = nested
 
@@ -16,6 +16,4 @@ class StructNode(Node):
 
     @staticmethod
     def is_type(decl_node):
-        if type(decl_node.type) == ast.Struct and decl_node.type.decls:
-            return True
-        return False
+        return isinstance(decl_node.type, ast.Struct) and decl_node.type.decls

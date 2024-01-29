@@ -11,7 +11,7 @@ class Node(metaclass=abc.ABCMeta):
 
     @staticmethod
     def _skip_ptr_decls(node, lvl=0):
-        if type(node) == ast.PtrDecl:
+        if isinstance(node, ast.PtrDecl):
             return Node._skip_ptr_decls(node.type, lvl+1)
         return node, lvl
 
