@@ -17,8 +17,11 @@ class FunctionNode(Node):
 
     @staticmethod
     def is_type(decl_node):
-        return (isinstance(decl_node, ast.Decl) or isinstance(decl_node, ast.PtrDecl)) and \
-            isinstance(decl_node.type, ast.FuncDecl)
+        try:
+            return (isinstance(decl_node, ast.Decl) or isinstance(decl_node, ast.PtrDecl)) and \
+                isinstance(decl_node.type, ast.FuncDecl)
+        except AttributeError:
+            return False
 
     def param_names(self):
         return [param.name for param in self.params]

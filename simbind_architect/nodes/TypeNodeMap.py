@@ -42,19 +42,25 @@ class TypeNodeMap(Node):
     def __init__(self, top_node):
         self.map = {}
         for nested in top_node:
-            if not isinstance(nested, ast.Typedef):
+            try:
+                if not isinstance(nested, ast.Typedef):
+                    continue
+                nested.type, _ = Node._skip_ptr_decls(nested.type)
+                if not isinstance(nested.type, ast.TypeDecl):
+                    continue
+                if isinstance(nested.type.type, ast.IdentifierType):
+                    self._update_types(nested.type.declname, " ".join(nested.type.type.names))
+                elif isinstance(nested.type.type, ast.Struct):
+                    self._update_types(nested.type.declname, nested.type.type.name)
+            except AttributeError:
                 continue
-            nested.type, _ = Node._skip_ptr_decls(nested.type)
-            if not isinstance(nested.type, ast.TypeDecl):
-                continue
-            if isinstance(nested.type.type, ast.IdentifierType):
-                self._update_types(nested.type.declname, " ".join(nested.type.type.names))
-            elif isinstance(nested.type.type, ast.Struct):
-                self._update_types(nested.type.declname, nested.type.type.name)
 
     @staticmethod
     def is_type(node):
-        return isinstance(node, ast.FileAST)
+        try:
+            return isinstance(node, ast.FileAST)
+        except AttributeError:
+            return False
 
     def __getitem__(self, item):
         if item in self.map:

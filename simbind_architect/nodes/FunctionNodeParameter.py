@@ -11,4 +11,7 @@ class FunctionNodeParameter(Node):
 
     @staticmethod
     def is_type(param):
-        return (isinstance(param, ast.Typename) or isinstance(param, ast.Decl)) and param.name is not None
+        try:
+            return (isinstance(param, ast.Typename) or isinstance(param, ast.Decl)) and param.name is not None
+        except AttributeError:
+            return False

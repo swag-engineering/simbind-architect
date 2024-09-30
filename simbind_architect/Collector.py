@@ -5,11 +5,17 @@ import os
 from pycparser import parse_file, c_ast as ast
 
 from .nodes import StructNodeCollection, FunctionNodeCollection, VariableNodeCollection, TypeNodeMap
-from .architect_utils import extract_model_data, collect_includes
+from .architect_utils import extract_model_data, craft_preprocessor_args
 
 
 class Collector:
-    def __init__(self, c_code_path: str, python_package_name: str, time_step: float):
+    def __init__(
+            self,
+            c_code_path: str,
+            python_package_name: str,
+            time_step: float,
+            preprocessor_defs: list[str]
+    ):
         self.c_code_tmp_path = c_code_path
         self.python_package_name = python_package_name
         self.time_step = time_step
@@ -24,8 +30,16 @@ class Collector:
 
         self.model_name, self.model_version = extract_model_data(self.rtmodel_h_path)
 
-        includes = collect_includes(self.c_code_tmp_path)
-        top_node = parse_file(self.rtmodel_h_path, use_cpp=True, cpp_args=includes)
+        preprocessor_args = craft_preprocessor_args(
+            [self.c_code_tmp_path],
+            preprocessor_defs
+        )
+        top_node = parse_file(
+            self.rtmodel_h_path,
+            use_cpp=True,
+            cpp_path='gcc',
+            cpp_args=['-E'] + preprocessor_args
+        )
         if not isinstance(top_node, ast.FileAST):
             raise ValueError("Didn't find valid declaration after parsing header.")
 
@@ -49,5 +63,17 @@ class Collector:
         } if struct_name in self.structs_collection else {}
 
     @classmethod
-    async def create(cls, c_code_path: str, python_package_name: str, time_step: float) -> Collector:
-        return await asyncio.to_thread(cls, c_code_path, python_package_name, time_step)
+    async def create(
+            cls,
+            c_code_path: str,
+            python_package_name: str,
+            time_step: float,
+            preprocessor_defs: list[str]
+    ) -> Collector:
+        return await asyncio.to_thread(
+            cls,
+            c_code_path,
+            python_package_name,
+            time_step,
+            preprocessor_defs
+        )
