@@ -26,10 +26,9 @@ def extract_model_name(rtmodel_data: str) -> str:
     return match.group(1)
 
 
-def collect_includes(dir_path: str) -> list[str]:
-    include_paths = [dir_path, pycparser_fake_libc.directory]
-    includes = ["-I" + path for path in include_paths]
-    return includes
+def craft_preprocessor_args(include_paths: list[str], def_paths: list[str]) -> list[str]:
+    includes = include_paths + [pycparser_fake_libc.directory]
+    return ["-I" + path for path in includes] + ["-D" + definition for definition in def_paths]
 
 
 def collect_files_with_ext(dir_path: str, ext: str) -> list[str]:

@@ -10,4 +10,7 @@ class StructNodeMember(Node):
 
     @staticmethod
     def is_type(decl_node):
-        return isinstance(decl_node.type, ast.IdentifierType)
+        try:
+            return isinstance(decl_node.type, ast.IdentifierType)
+        except AttributeError:
+            return False

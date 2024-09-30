@@ -9,11 +9,17 @@ class VariableNodeCollection(Node, Collection):
     def __init__(self, top_node):
         self.variables: list[VariableNode] = []
         for nested in top_node:
-            if VariableNode.is_type(nested):
-                self.variables.append(VariableNode(nested))
-            elif VariableNode.is_type(nested.type):
-                self.variables.append(VariableNode(nested.type))
+            try:
+                if VariableNode.is_type(nested):
+                    self.variables.append(VariableNode(nested))
+                elif VariableNode.is_type(nested.type):
+                    self.variables.append(VariableNode(nested.type))
+            except AttributeError:
+                continue
 
     @staticmethod
     def is_type(node):
-        return isinstance(node, ast.FileAST)
+        try:
+            return isinstance(node, ast.FileAST)
+        except AttributeError:
+            return False

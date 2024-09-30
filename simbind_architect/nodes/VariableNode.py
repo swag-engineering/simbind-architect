@@ -11,4 +11,7 @@ class VariableNode(Node):
 
     @staticmethod
     def is_type(node):
-        return isinstance(node, ast.Decl) and (isinstance(node.type, ast.TypeDecl) or isinstance(node.type, ast.PtrDecl))
+        try:
+            return isinstance(node, ast.Decl) and (isinstance(node.type, ast.TypeDecl) or isinstance(node.type, ast.PtrDecl))
+        except AttributeError:
+            return False
